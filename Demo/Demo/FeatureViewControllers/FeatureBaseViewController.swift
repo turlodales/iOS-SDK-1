@@ -102,8 +102,7 @@ class FeatureBaseViewController: UIViewController {
 
         let processOrderParams = ProcessOrderParams(
             orderId: orderData.orderID,
-            intent: DemoSettings.intent.rawValue,
-            countryCode: "US"
+            intent: DemoSettings.intent.rawValue
         )
 
         DemoMerchantAPI.sharedService.processOrder(processOrderParams: processOrderParams) { result in

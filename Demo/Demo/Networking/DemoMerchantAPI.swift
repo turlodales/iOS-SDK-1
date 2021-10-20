@@ -12,7 +12,7 @@ final class DemoMerchantAPI {
     ///   - orderParams: the parameters to create the order with
     ///   - completion: a result object vending either the order or an error
     func createOrder(orderParams: CreateOrderParams, completion: @escaping ((Result<Order, URLResponseError>) -> Void)) {
-        guard let url = buildBaseURL(with: "/order?countryCode=US") else {
+        guard let url = buildBaseURL(with: "/v2/checkout/orders") else {
             completion(.failure(.invalidURL))
             return
         }
@@ -20,10 +20,13 @@ final class DemoMerchantAPI {
         var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = "POST"
 
+        let encodedClientID = "\(DemoSettings.clientID):".data(using: .utf8)?.base64EncodedString() ?? ""
+        urlRequest.addValue("Basic \(encodedClientID)", forHTTPHeaderField: "Authorization")
+        urlRequest.addValue("application/json", forHTTPHeaderField: "Content-Type")
+
         let encoder = JSONEncoder()
         encoder.keyEncodingStrategy = .convertToSnakeCase
         urlRequest.httpBody = try? encoder.encode(orderParams)
-        urlRequest.addValue("application/json", forHTTPHeaderField: "Content-Type")
 
         URLSession.shared.dataTask(with: urlRequest) { data, response, error in
             guard let data = data, error == nil else {
@@ -51,15 +54,18 @@ final class DemoMerchantAPI {
     ///   - processOrderParams: the parameters to process the order with
     ///   - completion: a result object vending either the order or an error
     func processOrder(processOrderParams: ProcessOrderParams, completion: @escaping ((Result<Order, URLResponseError>) -> Void)) {
-        guard let url = buildBaseURL(with: "/\(processOrderParams.intent)-order") else {
+        guard let url = buildBaseURL(with: "/v2/checkout/orders/" + processOrderParams.orderId + "/" + processOrderParams.intent) else {
             completion(.failure(.invalidURL))
             return
         }
 
         var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = "POST"
+
+        let clientSecret = "EPlHO6SzNhuwYMu02SZDyL1mws7XE4hZFkqqks2YAV-Fn8xHy51WJMtryTP5QKlJPasL2c1v4sdd6LmD"
+        let encodedClientID = "\(DemoSettings.clientID):\(clientSecret)".data(using: .utf8)?.base64EncodedString() ?? ""
+        urlRequest.addValue("Basic \(encodedClientID)", forHTTPHeaderField: "Authorization")
         urlRequest.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        urlRequest.httpBody = try? JSONEncoder().encode(processOrderParams)
 
         URLSession.shared.dataTask(with: urlRequest) { data, response, error in
             guard let data = data, error == nil else {
