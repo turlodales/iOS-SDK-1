@@ -26,6 +26,44 @@ public class CardClient {
     /// - Parameters:
     ///   - orderID: The ID of the order to be approved
     ///   - card: The card to be charged for this order
+    /// - Returns: On success, returns a `CardResult` with card result details
+    /// - Throws: On failure, returns a `PayPalSDKError`
+    public func approveOrderAsync(orderID: String, card: Card) async throws -> CardResult {
+        do {
+            let confirmPaymentRequest = try ConfirmPaymentSourceRequest(
+                card: card,
+                orderID: orderID,
+                clientID: config.clientID
+            )
+
+            let result = await apiClient.fetchAsync(endpoint: confirmPaymentRequest)
+
+            switch result {
+            case .success(let response):
+                let cardResult = CardResult(
+                    orderID: response.id,
+                    lastFourDigits: response.paymentSource.card.lastDigits,
+                    brand: response.paymentSource.card.brand,
+                    type: response.paymentSource.card.type
+                )
+
+                return cardResult
+
+            case .failure(let error):
+                throw error
+            }
+        } catch {
+            // We don't expect this block to ever execute.
+            throw CardClientError.encodingError
+        }
+    }
+
+
+    /// Approve an order with a card, which validates buyer's card, and if valid, attaches the card as the payment source to the order.
+    /// After the order has been successfully approved, you will need to handle capturing/authorizing the order in your server.
+    /// - Parameters:
+    ///   - orderID: The ID of the order to be approved
+    ///   - card: The card to be charged for this order
     ///   - completion: Completion handler for approveOrder, which contains data of the order if success, or an error if failure
     public func approveOrder(orderID: String, card: Card, completion: @escaping (Result<CardResult, PayPalSDKError>) -> Void) {
         do {

@@ -118,24 +118,24 @@ class CardDemoViewController: FeatureBaseViewController, UITextFieldDelegate {
             return
         }
 
-        checkoutWithCard(card, orderID: orderID)
+        Task {
+            await checkoutWithCard(card, orderID: orderID)
+        }
     }
 
-    func checkoutWithCard(_ card: Card, orderID: String) {
+    func checkoutWithCard(_ card: Card, orderID: String) async {
         let config = CoreConfig(clientID: DemoSettings.clientID, environment: DemoSettings.environment.paypalSDKEnvironment)
         let cardClient = CardClient(config: config)
 
-        cardClient.approveOrder(orderID: orderID, card: card) { result in
-            switch result {
-            case .success(let result):
-                self.updateTitle("\(DemoSettings.intent.rawValue.capitalized) status: APPROVED")
-                self.processOrder(orderID: result.orderID) {
-                    self.payButton.stopAnimating()
-                }
-            case .failure(let error):
-                self.updateTitle("\(DemoSettings.intent) failed: \(error.localizedDescription)")
+        do {
+            let result = try await cardClient.approveOrderAsync(orderID: orderID, card: card)
+            self.updateTitle("\(DemoSettings.intent.rawValue.capitalized) status: APPROVED")
+            self.processOrder(orderID: result.orderID) {
                 self.payButton.stopAnimating()
             }
+        } catch let error {
+            self.updateTitle("\(DemoSettings.intent) failed: \(error.localizedDescription)")
+            self.payButton.stopAnimating()
         }
     }
 

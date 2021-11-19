@@ -24,6 +24,17 @@ public final class APIClient {
         self.urlSession = urlSession
     }
 
+    // Wrap completionHandler code into async-await style code
+    // TODO: Investigate refactoring existing fetch() into async-await style
+    @available(iOS 15.0.0, *)
+    public func fetchAsync<T: APIRequest>(endpoint: T) async -> Result<T.ResponseType, PayPalSDKError> {
+        await withCheckedContinuation { continuation in
+            fetch(endpoint: endpoint) { result, _  in
+                continuation.resume(returning: (result))
+            }
+        }
+    }
+
     public func fetch<T: APIRequest>(
         endpoint: T,
         completion: @escaping (Result<T.ResponseType, PayPalSDKError>, CorrelationID?) -> Void
