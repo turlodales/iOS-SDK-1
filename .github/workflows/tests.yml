@@ -1,31 +1,19 @@
 name: Tests
-on: [pull_request, workflow_dispatch]
+on: [pull_request]
 concurrency:
   group: tests-${{ github.event.number }}
   cancel-in-progress: true
 jobs:
   unit_test_job:
     name: Unit
-    runs-on: macOS-latest
+    runs-on: macOS-13
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
-      - name: Use Xcode 13
-        run: sudo xcode-select -switch /Applications/Xcode_13.2.1.app
-      - name: Install Dependencies
-        run: bundle install
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+      - name: Use Xcode 15.1
+        run: sudo xcode-select -switch /Applications/Xcode_15.1.app
       - name: Run Unit Tests
-        run: bundle exec fastlane unit_tests
-
-  code_coverage:
-    name: Unit Test Coverage
-    runs-on: macOS-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-      - name: Use Xcode 13
-        run: sudo xcode-select -switch /Applications/Xcode_13.2.1.app
-      - name: Install Dependencies
-        run: bundle install
-      - name: Calculate Unit Test Code Coverage
-        run: bundle exec fastlane coverage
+        run: set -o pipefail && xcodebuild -workspace 'PayPal.xcworkspace' -sdk 'iphonesimulator' -configuration 'Debug' -scheme 'UnitTests' -destination 'name=iPhone 14,platform=iOS Simulator' test | xcpretty

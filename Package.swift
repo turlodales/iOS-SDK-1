@@ -1,70 +1,61 @@
-// swift-tools-version:5.5
+// swift-tools-version:5.9
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
 
 let package = Package(
     name: "PayPal",
-    platforms: [.iOS(.v13)],
+    platforms: [.iOS(.v14)],
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
         .library(
-            name: "PaymentsCore",
-            targets: ["PaymentsCore"]
-        ),
-        // TODO: re-enable when native checkout is ready to be released
-        //.library(
-        //    name: "PayPalNativeCheckout",
-        //    targets: ["PayPalNativeCheckout"]
-        //),
-        .library(
-            name: "PayPalUI",
-            targets: ["PayPalUI"]
+            name: "CorePayments",
+            targets: ["CorePayments"]
         ),
         .library(
-            name: "PayPalWebCheckout",
-            targets: ["PayPalWebCheckout"]
+            name: "PaymentButtons",
+            targets: ["PaymentButtons"]
         ),
         .library(
-            name: "Card",
-            targets: ["Card"]
+            name: "PayPalWebPayments",
+            targets: ["PayPalWebPayments"]
         ),
         .library(
-            name: "PayPalDataCollector",
-            targets: ["PayPalDataCollector", "PPRiskMagnes"]
+            name: "CardPayments",
+            targets: ["CardPayments"]
+        ),
+        .library(
+            name: "FraudProtection",
+            targets: ["FraudProtection", "PPRiskMagnes"]
         )
-    ],
-    dependencies: [
-        // Dependencies declare other packages that this package depends on.
-        .package(name: "PayPalCheckout", url: "https://github.com/paypal/paypalcheckout-ios", .exact("0.77.0"))
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
-            name: "PaymentsCore",
-            dependencies: []
+            name: "CorePayments",
+            dependencies: [],
+            resources: [.copy("PrivacyInfo.xcprivacy")]
         ),
         .target(
-            name: "Card",
-            dependencies: ["PaymentsCore"]
-        ),
-        // TODO: re-enable when native checkout is ready to be released
-        //.target(
-        //    name: "PayPalNativeCheckout",
-        //    dependencies: ["PaymentsCore", "PayPalCheckout"]
-        //),
-        .target(
-            name: "PayPalUI",
-            dependencies: ["PaymentsCore"]
+            name: "CardPayments",
+            dependencies: ["CorePayments"],
+            resources: [.copy("PrivacyInfo.xcprivacy")]
         ),
         .target(
-            name: "PayPalWebCheckout",
-            dependencies: ["PaymentsCore"]
+            name: "PaymentButtons",
+            dependencies: ["CorePayments"],
+            resources: [.copy("PrivacyInfo.xcprivacy")]
         ),
         .target(
-            name: "PayPalDataCollector",
-            dependencies: ["PPRiskMagnes"]
+            name: "PayPalWebPayments",
+            dependencies: ["CorePayments"],
+            resources: [.copy("PrivacyInfo.xcprivacy")]
+        ),
+        .target(
+            name: "FraudProtection",
+            dependencies: ["CorePayments", "PPRiskMagnes"],
+            resources: [.copy("PrivacyInfo.xcprivacy")]
         ),
         .binaryTarget(
             name: "PPRiskMagnes",

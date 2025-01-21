@@ -1,6 +1,9 @@
 import SwiftUI
-import Card
-import PayPalWebCheckout
+import CardPayments
+import PayPalWebPayments
+import FraudProtection
+import PaymentButtons
+import CorePayments
 
 struct ContentView: View {
     var body: some View {

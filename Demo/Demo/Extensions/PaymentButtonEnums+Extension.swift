@@ -1,96 +1,78 @@
-import PayPalUI
+import PaymentButtons
 
 extension PayPalPayLaterButton.Color {
 
-    static func allCases() -> [PayPalPayLaterButton.Color] {
-        [
-            PayPalPayLaterButton.Color.gold,
-            PayPalPayLaterButton.Color.white,
-            PayPalPayLaterButton.Color.black,
-            PayPalPayLaterButton.Color.silver,
-            PayPalPayLaterButton.Color.blue
-        ]
+    public static var allCases: [PayPalPayLaterButton.Color] {
+        [.gold, .white, .black, .silver, .blue]
     }
 
     static func allCasesAsString() -> [String] {
-        allCases().map { $0.rawValue }
+        Self.allCases.map { $0.rawValue }
     }
 }
 
 extension PayPalButton.Color {
 
-    static func allCases() -> [PayPalButton.Color] {
-        [
-            PayPalButton.Color.gold,
-            PayPalButton.Color.white,
-            PayPalButton.Color.black,
-            PayPalButton.Color.silver,
-            PayPalButton.Color.blue
-        ]
+    public static var allCases: [PayPalButton.Color] {
+        [.gold, .white, .black, .silver, .blue]
     }
 
     static func allCasesAsString() -> [String] {
-        allCases().map { $0.rawValue }
+        Self.allCases.map { $0.rawValue }
     }
 }
 
 extension PayPalCreditButton.Color {
 
-    static func allCases() -> [PayPalCreditButton.Color] {
-        [
-            PayPalCreditButton.Color.white,
-            PayPalCreditButton.Color.black,
-            PayPalCreditButton.Color.darkBlue
-        ]
+    public static var allCases: [PayPalCreditButton.Color] {
+        [.white, .black, .darkBlue]
     }
 
     static func allCasesAsString() -> [String] {
-        allCases().map { $0.rawValue }
+        Self.allCases.map { $0.rawValue }
     }
 }
 
 extension PaymentButtonEdges {
 
-    static func allCases() -> [PaymentButtonEdges] {
-        [
-            PaymentButtonEdges.hardEdges,
-            PaymentButtonEdges.softEdges,
-            PaymentButtonEdges.rounded
-        ]
+    public static var allCases: [PaymentButtonEdges] {
+        [.hardEdges, .softEdges, .rounded, .custom(10)]
     }
 
     static func allCasesAsString() -> [String] {
-        allCases().map { $0.description }
+        Self.allCases.map { $0.description }
     }
 }
 
 extension PaymentButtonSize {
 
-    static func allCases() -> [PaymentButtonSize] {
-        [
-            PaymentButtonSize.mini,
-            PaymentButtonSize.collapsed,
-            PaymentButtonSize.expanded,
-            PaymentButtonSize.full
-        ]
+    public static var allCases: [PaymentButtonSize] {
+        [.mini, .collapsed, .expanded, .full]
     }
 
     static func allCasesAsString() -> [String] {
-        allCases().map { $0.description }
+        Self.allCases.map { $0.description }
     }
 }
 
 extension PaymentButtonFundingSource {
 
-    static func allCases() -> [PaymentButtonFundingSource] {
-        [
-            PaymentButtonFundingSource.payPal,
-            PaymentButtonFundingSource.payLater,
-            PaymentButtonFundingSource.credit
-        ]
+    public static var allCases: [PaymentButtonFundingSource] {
+        [.payPal, .payLater, .credit]
     }
 
     static func allCasesAsString() -> [String] {
-        PaymentButtonFundingSource.allCases().map { $0.rawValue }
+        Self.allCases.map { $0.rawValue }
+    }
+}
+
+extension PayPalButton.Label {
+
+    public static var allCases: [PayPalButton.Label] {
+        [.none, .checkout, .buyNow, .payWith]
+    }
+    
+    static func allCasesAsString() -> [String] {
+        Self.allCases.map { $0.rawValue }
     }
 }

@@ -1,15 +1,15 @@
 import XCTest
-@testable import PaymentsCore
+@testable import CorePayments
 
 class Environment_Tests: XCTestCase {
 
     func testEnvironment_sandboxURL_matchesExpectation() throws {
-        let expectedUrlString = "https://api.sandbox.paypal.com"
+        let expectedUrlString = "https://api-m.sandbox.paypal.com"
         XCTAssertEqual(Environment.sandbox.baseURL.absoluteString, expectedUrlString)
     }
 
-    func testEnvironment_productionURL_matchesExpectation() throws {
-        let expectedUrlString = "https://api.paypal.com"
-        XCTAssertEqual(Environment.production.baseURL.absoluteString, expectedUrlString)
+    func testEnvironment_liveURL_matchesExpectation() throws {
+        let expectedUrlString = "https://api-m.paypal.com"
+        XCTAssertEqual(Environment.live.baseURL.absoluteString, expectedUrlString)
     }
 }
