@@ -9,13 +9,11 @@ included:
   - UnitTests
  
 disabled_rules:
-  - discarded_notification_center_observer
-  - notification_center_detachment
-  - orphaned_doc_comment
   - todo
-  - unused_capture_list
   - type_name # tests will have have the format <SUT>_Tests
   - xctfail_message
+  - blanket_disable_command
+  - non_optional_string_data_conversion
 
 opt_in_rules:
   - array_init
@@ -108,8 +106,7 @@ private_over_fileprivate:
   validate_extensions: true
 
 trailing_whitespace:
-  ignores_empty_lines: false
-  ignores_comments: true
+  ignores_empty_lines: true
 
 vertical_whitespace:
   max_empty_lines: 2 
